@@ -31,10 +31,11 @@ const updateNotifier = require('update-notifier')
 module.exports = function (options) {
   if (typeof options !== 'object') { throw new Error('The options argument is required and must be an object.') }
   let { schema, help, prefix, alias } = options
-  const keys = schema.isJoi
+  const keys = schema && schema.isJoi
     ? schema._inner.children.map((x) => x.key)
     : Object.keys(schema)
-  const cli = meow(help, { string: keys, alias })
+
+  const cli = meow({ help, pkg: require(process.cwd() + '/package.json') }, { string: keys, alias })
   if (!prefix) { prefix = cli.pkg.name + '_' }
   updateNotifier({ pkg: cli.pkg }).notify()
   if (typeof schema !== 'object' || !keys.length) { throw new Error('The schema argument is required and must be an object.') }
