@@ -23,27 +23,30 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
 'use strict'
-const meow = require('meow')
-const updateNotifier = require('update-notifier')
+
+// npm
+const joi = require('joi')
+
+// self
 const clivage = require('./')
 
-updateNotifier({ pkg: require('./package.json') }).notify()
+const schema = {
+  more: joi.string().required(),
+  srv: joi.string().default('bob'),
+  port: joi.number().integer().default(5984)
+}
 
-const cli = meow([
-  'Usage',
-  '  $ clivage [input]',
-  '',
-  'Options',
-  '  --foo  Lorem ipsum. [Default: false]',
-  '',
-  'Examples',
-  '  $ clivage',
-  '  unicorns & rainbows',
-  '  $ clivage ponies',
-  '  ponies & rainbows'
-])
+const cli = clivage(schema, `
+  Usage
+    $ clivage [input]
 
-clivage(cli.input[0] || 'unicorns')
-  .then((response) => {
-    console.log(response)
-  })
+  Options
+    --foo  Lorem ipsum. [Default: false]
+
+  Examples
+    $ clivage
+    unicorns & rainbows
+    $ clivage ponies
+    ponies & rainbows`)
+
+console.log('cli', cli)

@@ -22,12 +22,29 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 'use strict'
 
-module.exports = function (str, opts) {
-  if (typeof str !== 'string') {
-    throw new TypeError('Expected a string')
+// npm
+const meow = require('meow')
+const dotenv = require('dotenv')
+const joi = require('joi')
+const updateNotifier = require('update-notifier')
+
+module.exports = function (schema, help) {
+  dotenv.load()
+  const keys = Object.keys(schema)
+  if (typeof schema !== 'object' || !keys.length) {
+    throw new Error('The schema argument is required and must be an object.')
   }
 
-  opts = opts || {}
+  if (!help || typeof help !== 'string') {
+    throw new Error('The help argument is required and must be a string.')
+  }
 
-  return Promise.resolve(str + ' & ' + (opts.postfix || 'rainbows'))
+  schema = joi.compile(schema)
+
+  const x = meow(help)
+  const yoyo = joi.validate(Object.assign({}, process.env, x.flags), schema, { stripUnknown: true })
+  if (yoyo.error) { throw yoyo.error }
+  x.flags = yoyo.value
+  updateNotifier({ pkg: x.pkg }).notify()
+  return x
 }
