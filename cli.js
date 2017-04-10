@@ -30,13 +30,17 @@ const joi = require('joi')
 // self
 const clivage = require('./')
 
-const schema = {
-  more: joi.string().required(),
-  srv: joi.string().default('bob'),
-  port: joi.number().integer().default(5984)
-}
+const schema = joi.object({
+  port: joi.number(),
+  more: joi.string(),
+  srv: joi.string().uri().default('http://localhost:5984').optional(),
+  user: joi.string().optional(),
+  pw: joi.string().optional()
+})
+  .with('pw', 'user')
+  .with('user', 'pw')
 
-const cli = clivage(schema, `
+const help = `
   Usage
     $ clivage [input]
 
@@ -47,6 +51,12 @@ const cli = clivage(schema, `
     $ clivage
     unicorns & rainbows
     $ clivage ponies
-    ponies & rainbows`)
+    ponies & rainbows`
+
+const alias = {
+  m: 'more'
+}
+
+const cli = clivage({ schema, help, alias }) // , prefix: 'BURLESK_'
 
 console.log('cli', cli)

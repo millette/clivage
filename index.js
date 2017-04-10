@@ -28,23 +28,28 @@ const dotenv = require('dotenv')
 const joi = require('joi')
 const updateNotifier = require('update-notifier')
 
-module.exports = function (schema, help) {
+module.exports = function (options) {
+  if (typeof options !== 'object') { throw new Error('The options argument is required and must be an object.') }
+  let { schema, help, prefix, alias } = options
+  const keys = schema.isJoi
+    ? schema._inner.children.map((x) => x.key)
+    : Object.keys(schema)
+  const cli = meow(help, { string: keys, alias })
+  if (!prefix) { prefix = cli.pkg.name + '_' }
+  updateNotifier({ pkg: cli.pkg }).notify()
+  if (typeof schema !== 'object' || !keys.length) { throw new Error('The schema argument is required and must be an object.') }
+  if (!help || typeof help !== 'string') { throw new Error('The help argument is required and must be a string.') }
+  if (alias && typeof alias !== 'object') { throw new Error('The alias argument must be an object.') }
+  let env = {}
+  let r
   dotenv.load()
-  const keys = Object.keys(schema)
-  if (typeof schema !== 'object' || !keys.length) {
-    throw new Error('The schema argument is required and must be an object.')
-  }
-
-  if (!help || typeof help !== 'string') {
-    throw new Error('The help argument is required and must be a string.')
+  for (r in process.env) {
+    if (!r.indexOf(prefix)) { env[r.slice(prefix.length)] = process.env[r] }
   }
 
   schema = joi.compile(schema)
-
-  const x = meow(help)
-  const yoyo = joi.validate(Object.assign({}, process.env, x.flags), schema, { stripUnknown: true })
-  if (yoyo.error) { throw yoyo.error }
-  x.flags = yoyo.value
-  updateNotifier({ pkg: x.pkg }).notify()
-  return x
+  cli.flags = joi.validate(Object.assign(env, cli.flags), schema, { stripUnknown: true, presence: 'required' })
+  if (cli.flags.error) { throw cli.flags.error }
+  cli.flags = cli.flags.value
+  return cli
 }
