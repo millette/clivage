@@ -34,16 +34,15 @@ module.exports = function (options) {
   const keys = schema && schema.isJoi
     ? schema._inner.children.map((x) => x.key)
     : Object.keys(schema)
-
-  const cli = meow({ help, pkg: require(process.cwd() + '/package.json') }, { string: keys, alias })
-  if (!prefix) { prefix = cli.pkg.name + '_' }
-  updateNotifier({ pkg: cli.pkg }).notify()
   if (typeof schema !== 'object' || !keys.length) { throw new Error('The schema argument is required and must be an object.') }
   if (!help || typeof help !== 'string') { throw new Error('The help argument is required and must be a string.') }
   if (alias && typeof alias !== 'object') { throw new Error('The alias argument must be an object.') }
+  const cli = meow({ help, pkg: require(process.cwd() + '/package.json') }, { string: keys, alias })
+  updateNotifier({ pkg: cli.pkg }).notify()
   let env = {}
   let r
   dotenv.load()
+  if (!prefix) { prefix = cli.pkg.name + '_' }
   for (r in process.env) {
     if (!r.indexOf(prefix)) { env[r.slice(prefix.length)] = process.env[r] }
   }
