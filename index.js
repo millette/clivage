@@ -24,9 +24,10 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 // npm
 const meow = require('meow')
-const dotenv = require('dotenv')
 const joi = require('joi')
-const updateNotifier = require('update-notifier')
+const pkg = require(process.cwd() + '/package.json')
+require('update-notifier')({ pkg }).notify()
+require('dotenv').load()
 
 module.exports = function (options) {
   if (typeof options !== 'object') { throw new Error('The options argument is required and must be an object.') }
@@ -37,12 +38,10 @@ module.exports = function (options) {
   if (typeof schema !== 'object' || !keys.length) { throw new Error('The schema argument is required and must be an object.') }
   if (!help || typeof help !== 'string') { throw new Error('The help argument is required and must be a string.') }
   if (alias && typeof alias !== 'object') { throw new Error('The alias argument must be an object.') }
-  const cli = meow({ help, pkg: require(process.cwd() + '/package.json') }, { string: keys, alias })
-  updateNotifier({ pkg: cli.pkg }).notify()
+  const cli = meow({ help, pkg }, { string: keys, alias })
   let env = {}
   let r
-  dotenv.load()
-  if (!prefix) { prefix = cli.pkg.name + '_' }
+  if (!prefix) { prefix = pkg.name + '_' }
   for (r in process.env) {
     if (!r.indexOf(prefix)) { env[r.slice(prefix.length)] = process.env[r] }
   }
