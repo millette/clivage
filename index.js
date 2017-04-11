@@ -32,7 +32,7 @@ require('dotenv').load()
 module.exports = function (options) {
   if (typeof options !== 'object') { throw new Error('The options argument is required and must be an object.') }
   if (options.isJoi) { options = { schema: options } }
-  let { schema, help, prefix, alias } = options
+  let { argv, schema, help, prefix, alias } = options
   const keys = schema && schema.isJoi
     ? schema._inner.children.map((x) => x.key)
     : Object.keys(schema)
@@ -41,6 +41,7 @@ module.exports = function (options) {
   if (alias && typeof alias !== 'object') { throw new Error('The alias argument must be an object.') }
   const meowOpts = { pkg }
   if (help) { meowOpts.help = help }
+  if (argv) { meowOpts.help = argv }
   const minimistOpts = { string: keys }
   if (alias) { minimistOpts.alias = alias }
   const cli = meow(meowOpts, minimistOpts)
