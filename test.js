@@ -18,5 +18,7 @@ const schema = joi.object({
   .with('user', 'pw')
 
 test('title', t => {
-  t.is(fn({schema}), 'unicorns & rainbows')
+  const ret = fn({ schema, argv: ['--more=rap', '--port=50'] })
+  t.is(ret.flags.more, 'rap')
+  t.is(ret.flags.port, 50)
 })

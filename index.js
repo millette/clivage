@@ -41,7 +41,7 @@ module.exports = function (options) {
   if (alias && typeof alias !== 'object') { throw new Error('The alias argument must be an object.') }
   const meowOpts = { pkg }
   if (help) { meowOpts.help = help }
-  if (argv) { meowOpts.help = argv }
+  if (argv) { meowOpts.argv = argv }
   const minimistOpts = { string: keys }
   if (alias) { minimistOpts.alias = alias }
   const cli = meow(meowOpts, minimistOpts)
