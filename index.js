@@ -31,14 +31,19 @@ require('dotenv').load()
 
 module.exports = function (options) {
   if (typeof options !== 'object') { throw new Error('The options argument is required and must be an object.') }
+  if (options.isJoi) { options = { schema: options } }
   let { schema, help, prefix, alias } = options
   const keys = schema && schema.isJoi
     ? schema._inner.children.map((x) => x.key)
     : Object.keys(schema)
   if (typeof schema !== 'object' || !keys.length) { throw new Error('The schema argument is required and must be an object.') }
-  if (!help || typeof help !== 'string') { throw new Error('The help argument is required and must be a string.') }
+  if (help && typeof help !== 'string') { throw new Error('The help argument must be a string.') }
   if (alias && typeof alias !== 'object') { throw new Error('The alias argument must be an object.') }
-  const cli = meow({ help, pkg }, { string: keys, alias })
+  const meowOpts = { pkg }
+  if (help) { meowOpts.help = help }
+  const minimistOpts = { string: keys }
+  if (alias) { minimistOpts.alias = alias }
+  const cli = meow(meowOpts, minimistOpts)
   let env = {}
   let r
   if (!prefix) { prefix = pkg.name + '_' }
