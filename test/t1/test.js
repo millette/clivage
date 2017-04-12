@@ -20,7 +20,7 @@ const schema = joi.object({
   .with('pw', 'user')
   .with('user', 'pw')
 
-const envPath = [__dirname, '.env'].join('/')
+const envPath = [__dirname, '.env.test'].join('/')
 
 test('flags #2', t => {
   const ret = fn({ schema, argv, envPath })
