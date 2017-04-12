@@ -7,8 +7,7 @@ import test from 'ava'
 // self
 import fn from './'
 
-// const argv = ['--more=rap', '--port=50']
-const argv = ['--badam', '--more=rap', '--port=50']
+const argv = ['--more=rap', '--port=50']
 
 const schema = joi.object({
   badam: joi.boolean().truthy('').optional(),
@@ -21,9 +20,9 @@ const schema = joi.object({
   .with('pw', 'user')
   .with('user', 'pw')
 
-test('title', t => {
+test('flags #1', t => {
   const ret = fn({ schema, argv })
-  console.log('FLAGS', ret.flags)
+  // console.log('FLAGS#1', ret.flags)
   t.is(ret.flags.more, 'rap')
   t.is(ret.flags.port, 50)
   t.is(ret.flags.srv, 'http://localhost:5984')
