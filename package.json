@@ -30,10 +30,10 @@
   },
   "devDependencies": {
     "ava": "^0.19.1",
-    "babel-eslint": "^7.1.1",
-    "coveralls": "^2.12.0",
+    "babel-eslint": "^7.2.1",
+    "coveralls": "^2.13.0",
     "joi": "^10.4.1",
-    "nyc": "^10.1.2",
+    "nyc": "^10.2.0",
     "standard": "^10.0.1"
   },
   "peerDependencies": {
