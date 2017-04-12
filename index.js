@@ -22,17 +22,21 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 'use strict'
 
+// core
+const fs = require('fs')
+
 // npm
 const meow = require('meow')
 const joi = require('joi')
 const pkg = require(process.cwd() + '/package.json')
 require('update-notifier')({ pkg }).notify()
-require('dotenv').load()
 
 module.exports = function (options) {
   if (typeof options !== 'object') { throw new Error('The options argument is required and must be an object.') }
   if (options.isJoi) { options = { schema: options } }
-  let { argv, schema, help, prefix, alias } = options
+  let { argv, schema, help, prefix, alias, envPath } = options
+  const dotenvOpts = { path: envPath || '.env' }
+  if (fs.existsSync(dotenvOpts.path)) { require('dotenv').load(dotenvOpts) }
   const keys = schema && schema.isJoi
     ? schema._inner.children.map((x) => x.key)
     : Object.keys(schema)
