@@ -43,7 +43,7 @@ const schema = joi.object({
   .with('pw', 'user')
   .with('user', 'pw')
 
-const cli = clivate(schema)
+const cli = clivage(schema)
 cli.flags
 
 //=> { port: 1234, host: 'http://localhost:5984' }
