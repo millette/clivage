@@ -26,11 +26,11 @@
   "dependencies": {
     "dotenv": "^4.0.0",
     "meow": "^3.7.0",
-    "update-notifier": "^2.2.0"
+    "update-notifier": "^2.3.0"
   },
   "devDependencies": {
-    "ava": "^0.19.1",
-    "coveralls": "^2.13.1",
+    "ava": "^0.22.0",
+    "coveralls": "^3.0.0",
     "joi": "^10.6.0",
     "nyc": "^11.2.1",
     "standard": "^10.0.3"
