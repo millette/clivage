@@ -50,7 +50,7 @@ module.exports = function (options) {
   const minimistOpts = { string: keys }
   if (alias) { minimistOpts.alias = alias }
   const cli = meow(meowOpts, minimistOpts)
-  let env = {}
+  const env = {}
   let r
   if (!prefix) { prefix = pkg.name + '_' }
   for (r in process.env) {
