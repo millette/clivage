@@ -37,7 +37,7 @@ module.exports = function (options) {
   let { argv, schema, help, prefix, alias, envPath } = options
   if (!schema) { throw new Error('The schema argument is required and must be an object.') }
   const dotenvOpts = { path: envPath || '.env' }
-  if (fs.existsSync(dotenvOpts.path)) { require('dotenv').load(dotenvOpts) }
+  if (fs.existsSync(dotenvOpts.path)) { require('dotenv').config(dotenvOpts) }
   const keys = schema && schema.isJoi
     ? schema._inner.children.map((x) => x.key)
     : Object.keys(schema)
